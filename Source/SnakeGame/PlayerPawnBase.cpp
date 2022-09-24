@@ -55,7 +55,7 @@ void APlayerPawnBase::HandlePlayerVerticalInput(float value)
 		{
 			SnakeActor->LastMoveDirection = EMovementDirection::UP;
 		}
-		else if(value<0 && SnakeActor->LastMoveDirection != EMovementDirection::UP)
+		else if(value < 0 && SnakeActor->LastMoveDirection != EMovementDirection::UP)
 		{
 			SnakeActor->LastMoveDirection = EMovementDirection::DOWN;
 		}
