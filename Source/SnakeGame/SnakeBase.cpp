@@ -1,30 +1,23 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SnakeBase.h"
 #include "SnakeElementBase.h"
+#include "Food.h"
 
-
-// Sets default values
 ASnakeBase::ASnakeBase()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	ElementSize = 100.f;
-	MovementSpeed = 10.f;
-	LastMoveDirection = EMovementDirection::DOWN;
+	MovementSpeed = 0.4f;
+	LastMoveDirection = EMovementDirection::RIGHT;
 }
 
-// Called when the game starts or when spawned
 void ASnakeBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorTickInterval(MovementSpeed);
 	AddSnakeElement(5);
+	
 
 }
-
-// Called every frame
 void ASnakeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -37,10 +30,9 @@ void ASnakeBase::AddSnakeElement(int ElementsNum)
 	{
 		FVector NewLocation(SnakeElements.Num() * ElementSize, 0, 0);
 		FTransform NewTransform(NewLocation);
-
-		ASnakeElementBase* NewSnakeElem = GetWorld()->SpawnActor<ASnakeElementBase>(SnakeElementClass, NewTransform);
+		ASnakeElementBase* NewSnakeElem = GetWorld()->SpawnActor<ASnakeElementBase>
+			(SnakeElementClass, NewTransform);
 		
-
 		NewSnakeElem->SnakeOwner = this;
 		int32 ElemIndex = SnakeElements.Add(NewSnakeElem);
 		if(ElemIndex == 0)
@@ -48,6 +40,8 @@ void ASnakeBase::AddSnakeElement(int ElementsNum)
 			NewSnakeElem->SetFirstElementType();
 		}
 	}
+	SnakeElements[SnakeElements.Num() - 1]->
+		SetActorLocation(SnakeElements[SnakeElements.Num() - 2]->GetActorLocation());
 }
 
 void ASnakeBase::Move()
@@ -67,7 +61,8 @@ void ASnakeBase::Move()
 	}
 	//AddActorWorldOffset(MovementVector);
 	SnakeElements[0]->ToggleCollision();
-	for(int i = SnakeElements.Num() -1;i>0;i--)
+
+	for(int i = SnakeElements.Num() - 1;i > 0; i--)
 	{
 		auto CurrentElement = SnakeElements[i];
 		auto PrevElement = SnakeElements[i - 1];
@@ -77,7 +72,6 @@ void ASnakeBase::Move()
 
 	SnakeElements[0]->AddActorWorldOffset(MovementVector);
 	SnakeElements[0]->ToggleCollision();
-
 }
 
 void ASnakeBase::SnakeElementOverlap(ASnakeElementBase* OverlappedElement,AActor* Other)
@@ -94,6 +88,36 @@ void ASnakeBase::SnakeElementOverlap(ASnakeElementBase* OverlappedElement,AActor
 		}
 	}
 }
+
+void ASnakeBase::KillSnake()
+{
+	for(int i = SnakeElements.Num() - 1; i > 0;i--)
+	{
+		SnakeElements[i]->Destroy();
+	}
+}
+
+void ASnakeBase::SpeedOrSlowdown()
+{
+	if(TimerSpeed.IsValid())
+	GetWorldTimerManager().ClearTimer(TimerSpeed);
+
+	MovementSpeed = FMath::FRandRange(0.1f,0.6f);
+
+	SetActorTickInterval(MovementSpeed);
+	GetWorldTimerManager().SetTimer(TimerSpeed, this,
+									&ASnakeBase::SpeedReturn,
+										 1.0f, 
+										true,							
+									10.0f);
+}
+
+void ASnakeBase::SpeedReturn()
+{
+	MovementSpeed = 0.4f;
+	SetActorTickInterval(MovementSpeed);
+}
+
 
 
 

@@ -4,35 +4,40 @@
 #include "PlayerPawnBase.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
 #include "SnakeBase.h"
+#include "Bonuses.h"
 #include "Components/InputComponent.h"
 
-// Sets default values
+
 APlayerPawnBase::APlayerPawnBase()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
 	PawnCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PawnCamera"));
 	RootComponent = PawnCamera;
 
+	randomTimer = FMath::FRandRange(20.f, 35.f);
+
+	foodX = FMath::FRandRange(-1350, 1310);
+    foodY = FMath::FRandRange(-1630, 1690);
+	foodZ = -10.f;
 }
 
-// Called when the game starts or when spawned
 void APlayerPawnBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorRotation(FRotator(-90,0,0));
 	CreateSnakeActor();
+	CreateFoodActor();
+	CreateBonusActor();
+
 }
 
-// Called every frame
 void APlayerPawnBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
 void APlayerPawnBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -44,7 +49,6 @@ void APlayerPawnBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void APlayerPawnBase::CreateSnakeActor()
 {
 	SnakeActor = GetWorld()->SpawnActor<ASnakeBase>(SnakeActorClass, FTransform());
-	
 }
 
 void APlayerPawnBase::HandlePlayerVerticalInput(float value)
@@ -76,4 +80,31 @@ void APlayerPawnBase::HandlePlayerHorizontalInput(float value)
 		}
 	}
 }
+
+void APlayerPawnBase::CreateFoodActor()
+{
+	GetWorld()->SpawnActor<AFood>(FoodClass, FTransform());
+}
+
+
+void APlayerPawnBase::CreateBonusActor()
+{
+	if(timerSpawn.IsValid())
+		GetWorldTimerManager().ClearTimer(timerSpawn);
+
+	FVector spawnBonus = FVector(foodX,foodY, foodZ);
+
+	GetWorld()->SpawnActor<ABonuses>(BonusClass, spawnBonus,FRotator(0,0,0));
+
+	GetWorldTimerManager().SetTimer(timerSpawn, this,
+		&APlayerPawnBase::CreateBonusActor,
+		1.0f,
+		true,
+	randomTimer);
+}
+
+
+
+
+
 

@@ -1,46 +1,49 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Food.h"
 #include "SnakeBase.h"
-#include "SnakeElementBase.h"
+#include "PlayerPawnBase.h"
 
-// Sets default values
 AFood::AFood()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
-// Called when the game starts or when spawned
 void AFood::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	RandomFood();
 }
 
-// Called every frame
 void AFood::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-void AFood::Interact(AActor* Interactor,bool bIsHead)
+void AFood::Interact(AActor* Interactor, bool bIsHead)
 {
 	if(bIsHead)
 	{
 		auto Snake = Cast<ASnakeBase>(Interactor);
+		
 		if(IsValid(Snake))
 		{
-			ASnakeElementBase* NewSn; 
-			NewSn->SetActorHiddenInGame(true);
-			
 			Snake->AddSnakeElement();
-			 
-			Destroy();
+			RandomFood();
 		}
 	}
 }
+
+FVector2D AFood::GetRandomPos()
+{
+	float foodX = FMath::FRandRange(-1350, 1310);
+	float foodY = FMath::FRandRange(-1630, 1690);
+	
+	return FVector2D(foodX, foodY);
+}
+
+void AFood::RandomFood()
+{
+	FVector spawnFood = FVector(GetRandomPos(), foodZ);
+	SetActorLocation(spawnFood);
+}
+
 
