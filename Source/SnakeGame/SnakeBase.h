@@ -44,6 +44,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		float MovementSpeed;
 
+
 protected:
 	virtual void BeginPlay() override;
 

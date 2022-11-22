@@ -34,8 +34,8 @@ void AFood::Interact(AActor* Interactor, bool bIsHead)
 
 FVector2D AFood::GetRandomPos()
 {
-	float foodX = FMath::FRandRange(-1350, 1310);
-	float foodY = FMath::FRandRange(-1630, 1690);
+	 foodX = FMath::FRandRange(-1350, 1310);
+	 foodY = FMath::FRandRange(-1630, 1690);
 	
 	return FVector2D(foodX, foodY);
 }

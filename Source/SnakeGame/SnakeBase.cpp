@@ -6,7 +6,7 @@ ASnakeBase::ASnakeBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	ElementSize = 100.f;
-	MovementSpeed = 0.4f;
+	MovementSpeed = 0.7f;
 	LastMoveDirection = EMovementDirection::RIGHT;
 }
 
@@ -107,8 +107,8 @@ void ASnakeBase::SpeedOrSlowdown()
 	SetActorTickInterval(MovementSpeed);
 	GetWorldTimerManager().SetTimer(TimerSpeed, this,
 									&ASnakeBase::SpeedReturn,
-										 1.0f, 
-										true,							
+									1.0f, 
+									true,							
 									10.0f);
 }
 
@@ -117,6 +117,7 @@ void ASnakeBase::SpeedReturn()
 	MovementSpeed = 0.4f;
 	SetActorTickInterval(MovementSpeed);
 }
+
 
 
 

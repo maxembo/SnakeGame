@@ -1,26 +1,23 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "Teleport.h"
 #include "SnakeBase.h"
 #include "SnakeElementBase.h"
 
-// Sets default values
 ATeleport::ATeleport()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+	OnActorBeginOverlap.AddDynamic(this,&ATeleport::EnterTeleport);
+	OnActorBeginOverlap.AddDynamic(this,&ATeleport::ExitTeleport);
+
+	teleport = false;
 }
 
-// Called when the game starts or when spawned
 void ATeleport::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
 void ATeleport::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -34,9 +31,30 @@ void ATeleport::Interact(AActor* Interactor, bool bIsHead)
 		auto Snake = Cast<ASnakeBase>(Interactor);
 		if(IsValid(Snake))
 		{
-			Snake->SnakeElements[0]->SetActorLocation(FVector(0,0,0));
-
+			EnterTeleport(Snake,Interactor);
+			ExitTeleport(Snake, Interactor);
 		}
+	}
+}
+
+void ATeleport::EnterTeleport(AActor* overlappedActor, AActor* otherActor)
+{
+	if (otherTeleport)
+	{
+		auto Snake = Cast<ASnakeBase>(otherActor);
+		if (Snake && !otherTeleport->teleport)
+		{
+			teleport = true;
+			Snake->SnakeElements[0]->SetActorLocation(otherTeleport->GetActorLocation());
+		}
+	}
+}
+
+void ATeleport::ExitTeleport(AActor* overlappedActor, AActor* otherActor)
+{
+	if (otherTeleport && !teleport)
+	{
+		otherTeleport->teleport = false;
 	}
 }
 

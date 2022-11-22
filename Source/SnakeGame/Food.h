@@ -6,7 +6,7 @@
 #include "Interactable.h"
 #include "Food.generated.h"
 
-
+class ASnakeElementBase;
 UCLASS()
 class SNAKEGAME_API AFood : public AActor,public IInteractable
 {
@@ -18,7 +18,13 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<AFood>FoodClass;
 
+	float foodX;
+
+	float foodY;
+
 	float foodZ = -10.f;
+
+
 
 protected:
 	virtual void BeginPlay() override;

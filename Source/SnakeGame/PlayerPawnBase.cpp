@@ -16,11 +16,10 @@ APlayerPawnBase::APlayerPawnBase()
 	RootComponent = PawnCamera;
 
 	randomTimer = FMath::FRandRange(20.f, 35.f);
-
-	foodX = FMath::FRandRange(-1350, 1310);
-    foodY = FMath::FRandRange(-1630, 1690);
 	foodZ = -10.f;
 }
+
+
 
 void APlayerPawnBase::BeginPlay()
 {
@@ -29,8 +28,9 @@ void APlayerPawnBase::BeginPlay()
 	CreateSnakeActor();
 	CreateFoodActor();
 	CreateBonusActor();
-
 }
+
+
 
 void APlayerPawnBase::Tick(float DeltaTime)
 {
@@ -41,6 +41,7 @@ void APlayerPawnBase::Tick(float DeltaTime)
 void APlayerPawnBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
 
 	PlayerInputComponent->BindAxis("Vertical", this, &APlayerPawnBase::HandlePlayerVerticalInput);
 	PlayerInputComponent->BindAxis("Horizontal", this, &APlayerPawnBase::HandlePlayerHorizontalInput);
@@ -53,7 +54,7 @@ void APlayerPawnBase::CreateSnakeActor()
 
 void APlayerPawnBase::HandlePlayerVerticalInput(float value)
 {
-	if (IsValid(SnakeActor)) 
+	if (IsValid(SnakeActor))
 	{
 		if (value > 0 && SnakeActor->LastMoveDirection != EMovementDirection::DOWN)
 		{
@@ -92,7 +93,7 @@ void APlayerPawnBase::CreateBonusActor()
 	if(timerSpawn.IsValid())
 		GetWorldTimerManager().ClearTimer(timerSpawn);
 
-	FVector spawnBonus = FVector(foodX,foodY, foodZ);
+	FVector spawnBonus = FVector(GetRandom(), foodZ);
 
 	GetWorld()->SpawnActor<ABonuses>(BonusClass, spawnBonus,FRotator(0,0,0));
 
@@ -100,7 +101,7 @@ void APlayerPawnBase::CreateBonusActor()
 		&APlayerPawnBase::CreateBonusActor,
 		1.0f,
 		true,
-	randomTimer);
+		randomTimer);
 }
 
 

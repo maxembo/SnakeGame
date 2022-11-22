@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class ASnakeBase;
+class ASnakeElementBase;
 
 UCLASS()
 class SNAKEGAME_API APlayerPawnBase : public APawn
@@ -47,7 +48,13 @@ public:
 	UPROPERTY()
 		float foodZ;
 
-	
+	FVector2D GetRandom()
+	{
+		foodX = FMath::FRandRange(-1350, 1310);
+		foodY = FMath::FRandRange(-1630, 1690);
+		return FVector2D(foodX, foodY);
+	}
+
 protected:
 	virtual void BeginPlay() override;
 

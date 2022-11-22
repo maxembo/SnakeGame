@@ -25,6 +25,8 @@ public:
 	UPROPERTY()
 		ASnakeBase* SnakeOwner;
 
+	
+
 protected:
 	virtual void BeginPlay() override;
 
