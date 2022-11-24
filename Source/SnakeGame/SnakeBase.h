@@ -44,7 +44,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		float MovementSpeed;
 
-
+	UPROPERTY()
+	bool turnSnake;
+	
 protected:
 	virtual void BeginPlay() override;
 

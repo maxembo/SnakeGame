@@ -1,3 +1,4 @@
+
 #include "SnakeBase.h"
 #include "SnakeElementBase.h"
 #include "Food.h"
@@ -8,6 +9,7 @@ ASnakeBase::ASnakeBase()
 	ElementSize = 100.f;
 	MovementSpeed = 0.7f;
 	LastMoveDirection = EMovementDirection::RIGHT;
+	turnSnake = false;
 }
 
 void ASnakeBase::BeginPlay()
@@ -15,9 +17,8 @@ void ASnakeBase::BeginPlay()
 	Super::BeginPlay();
 	SetActorTickInterval(MovementSpeed);
 	AddSnakeElement(5);
-	
-
 }
+
 void ASnakeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -72,6 +73,8 @@ void ASnakeBase::Move()
 
 	SnakeElements[0]->AddActorWorldOffset(MovementVector);
 	SnakeElements[0]->ToggleCollision();
+	
+	turnSnake = true;
 }
 
 void ASnakeBase::SnakeElementOverlap(ASnakeElementBase* OverlappedElement,AActor* Other)

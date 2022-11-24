@@ -1,12 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "PlayerPawnBase.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
 #include "SnakeBase.h"
 #include "Bonuses.h"
 #include "Components/InputComponent.h"
-
 
 APlayerPawnBase::APlayerPawnBase()
 {
@@ -16,9 +13,8 @@ APlayerPawnBase::APlayerPawnBase()
 	RootComponent = PawnCamera;
 
 	randomTimer = FMath::FRandRange(20.f, 35.f);
-	foodZ = -10.f;
+	foodZ = 0.f;
 }
-
 
 
 void APlayerPawnBase::BeginPlay()
@@ -29,7 +25,6 @@ void APlayerPawnBase::BeginPlay()
 	CreateFoodActor();
 	CreateBonusActor();
 }
-
 
 
 void APlayerPawnBase::Tick(float DeltaTime)
@@ -54,30 +49,37 @@ void APlayerPawnBase::CreateSnakeActor()
 
 void APlayerPawnBase::HandlePlayerVerticalInput(float value)
 {
-	if (IsValid(SnakeActor))
+	if (IsValid(SnakeActor) && SnakeActor->turnSnake)
 	{
 		if (value > 0 && SnakeActor->LastMoveDirection != EMovementDirection::DOWN)
 		{
 			SnakeActor->LastMoveDirection = EMovementDirection::UP;
+			SnakeActor->turnSnake = false;
+
 		}
 		else if(value < 0 && SnakeActor->LastMoveDirection != EMovementDirection::UP)
 		{
 			SnakeActor->LastMoveDirection = EMovementDirection::DOWN;
+			SnakeActor->turnSnake = false;
 		}
 	}
 }
 
 void APlayerPawnBase::HandlePlayerHorizontalInput(float value)
 {
-	if (IsValid(SnakeActor)) 
+	if (IsValid(SnakeActor) && SnakeActor->turnSnake)
 	{
 		if (value > 0 && SnakeActor->LastMoveDirection != EMovementDirection::LEFT)
 		{
 			SnakeActor->LastMoveDirection = EMovementDirection::RIGHT;
+			SnakeActor->turnSnake = false;
+		
 		}
 		else if (value < 0 && SnakeActor->LastMoveDirection != EMovementDirection::RIGHT)
 		{
 			SnakeActor->LastMoveDirection = EMovementDirection::LEFT;
+			SnakeActor->turnSnake = false;
+		
 		}
 	}
 }
